@@ -18,11 +18,13 @@ spec:
         - name: POD_REGEX
           value: '{{ .Values.tap.regex }}'
         - name: NAMESPACES
-          value: '{{ .Values.tap.allnamespaces | ternary "" .Values.tap.namespaces }}'
-        - name: STORAGE_LIMIT
-          value: '{{ .Values.tap.storagelimit }}'
+          value: '{{ gt (len .Values.tap.namespaces) 0 | ternary (join "," .Values.tap.namespaces) "" }}'
         - name: LICENSE
           value: '{{ .Values.license }}'
+        - name: SCRIPTING_ENV
+          value: '{}'
+        - name: SCRIPTING_SCRIPTS
+          value: '[]'
       image: '{{ .Values.tap.docker.registry }}/hub:{{ .Values.tap.docker.tag }}'
       imagePullPolicy: '{{ .Values.tap.docker.imagePullPolicy }}'
       name: kubeshark-hub
