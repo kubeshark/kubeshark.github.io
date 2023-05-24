@@ -43,6 +43,13 @@ tap:
   ignoreTainted: false
   resourceLabels: {}
   nodeSelectorTerms: []
+  ingress:
+    enabled: false
+    host: ks.svc.cluster.local
+    tls: []
+    auth:
+      approvedDomains: []
+    certManager: letsencrypt-prod
   debug: false
 logs:
   file: ""
