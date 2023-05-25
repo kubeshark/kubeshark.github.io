@@ -51,3 +51,21 @@ kubectl port-forward -n kubeshark service/kubeshark-front 8899:80
 ```
 
 Visit [localhost:8899](http://localhost:8899)
+
+## Installing with Ingress Enabled
+
+```shell
+helm install kubeshark kubeshark/kubeshark \
+  --set tap.ingress.enabled=true \
+  --set tap.ingress.host=ks.svc.cluster.local \
+  --set "tap.ingress.auth.approvedDomains={gmail.com}" \
+  --set license=LICENSE_GOES_HERE
+```
+
+## Installing with Persistent Storage Enabled
+
+```shell
+helm install kubeshark kubeshark/kubeshark \
+  --set tap.persistentstorage=true \
+  --set license=LICENSE_GOES_HERE
+```
