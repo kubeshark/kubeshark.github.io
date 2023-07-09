@@ -19,6 +19,8 @@ spec:
     - command:
         - ./hub
         {{ .Values.tap.debug | ternary "- -debug" "" }}
+        - -port
+        - '{{ .Values.tap.proxy.hub.srvport }}'
       env:
         - name: POD_REGEX
           value: '{{ .Values.tap.regex }}'
@@ -51,12 +53,5 @@ spec:
 {{- if not .Values.tap.ignoretainted }}
     - effect: NoSchedule
       operator: Exists
-{{- end }}
-{{- if gt (len .Values.tap.nodeselectorterms) 0}}
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          {{- toYaml .Values.tap.nodeselectorterms | nindent 8 }}
 {{- end }}
 status: {}
