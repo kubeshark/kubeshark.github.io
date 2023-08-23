@@ -2,11 +2,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
   labels:
-  {{- if .Values.tap.labels }}
-    {{- toYaml .Values.tap.labels | nindent 4 }}
-  {{- end }}
+    {{- include "kubeshark.labels" . | nindent 4 }}
   annotations:
   {{- if .Values.tap.annotations }}
     {{- toYaml .Values.tap.annotations | nindent 4 }}
@@ -18,13 +15,11 @@ rules:
       - ""
       - extensions
       - apps
-      - networking.k8s.io
     resources:
       - pods
       - services
       - endpoints
       - persistentvolumeclaims
-      - ingresses
     verbs:
       - list
       - get
