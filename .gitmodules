@@ -1,0 +1,4 @@
+[submodule "cli"]
+	path = cli
+	url = git@github.com:kubeshark/kubeshark.git
+	branch = master
