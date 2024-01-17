@@ -94,7 +94,7 @@ For example, change from the default 500Mi to 1Gi:
 ```shell
 --set tap.storageLimit=1Gi
 ```
- 
+
 ## Disabling IPV6
 
 Not all have IPV6 enabled, hence this has to be disabled as follows:
@@ -103,6 +103,10 @@ Not all have IPV6 enabled, hence this has to be disabled as follows:
 helm install kubeshark kubeshark/kubeshark \
   --set tap.ipv6=false
 ```
+
+## Metrics
+
+Please refer to [metrics](./metrics.md) documentation for details.
 
 ## Configuration
 
@@ -152,8 +156,12 @@ helm install kubeshark kubeshark/kubeshark \
 | `tap.ingress.annotations`                 | `Ingress` annotations                           | `{}`                                                    |
 | `tap.ipv6`                                | Enable IPv6 support for the front-end                        | `true`                                                  |
 | `tap.debug`                               | Enable debug mode                             | `false`                                                 |
-| `tap.noKernelModule`                      | Do not install `PF_RING` kernel module       | `false`                                                 |
+| `tap.kernelModule.enabled`                | Use PF_RING kernel module([details](PF_RING.md))      | `true`                                                 |
+| `tap.kernelModule.image`                  | Container image containing PF_RING kernel module with supported kernel version([details](PF_RING.md))      | "kubeshark/pf-ring-module:all"                                                 |
+| `tap.kernelModule.unloadOnDestroy`        | Create additional container which watches for pod termination and unloads PF_RING kernel module. | `false`|
 | `tap.telemetry.enabled`                   | Enable anonymous usage statistics collection           | `true`                                                  |
+| `tap.defaultFilter`                       | Sets the default dashboard KFL filter (e.g. `http`)        | `""`                                                  |
+| `tap.globalFilter`                        | Prepends to any KFL filter and can be used to limit what is visible in the dashboard. For example, `redact("request.headers.Authorization")` will redact the appropriate field.       | `""`                                        |
 | `logs.file`                               | Logs dump path                      | `""`                                                    |
 | `kube.configPath`                         | Path to the `kubeconfig` file (`$HOME/.kube/config`)            | `""`                                                    |
 | `kube.context`                            | Kubernetes context to use for the deployment  | `""`                                                    |
@@ -163,3 +171,8 @@ helm install kubeshark kubeshark/kubeshark \
 | `scripting.env`                           | Environment variables for the scripting      | `{}`                                                    |
 | `scripting.source`                        | Source directory of the scripts                | `""`                                                    |
 | `scripting.watchScripts`                  | Enable watch mode for the scripts in source directory          | `true`                                                  |
+| `tap.metrics.port`                  | Pod port used to expose Prometheus metrics          | `49100`                                                  |
+
+KernelMapping pairs kernel versions with a
+                            DriverContainer image. Kernel versions can be matched
+                            literally or using a regular expression

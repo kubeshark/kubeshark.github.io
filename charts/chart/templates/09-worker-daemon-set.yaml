@@ -25,6 +25,23 @@ spec:
       name: kubeshark-worker-daemon-set
       namespace: kubeshark
     spec:
+    {{- if .Values.tap.kernelModule.enabled }}
+      initContainers:
+      - name: load-pf-ring
+        image: {{ .Values.tap.kernelModule.image }}
+        imagePullPolicy: {{ .Values.tap.docker.imagePullPolicy }}
+        securityContext:
+          capabilities:
+            add:
+              {{- range .Values.tap.capabilities.kernelModule }}
+              {{ print "- " . }}
+              {{- end }}
+            drop:
+              - ALL
+        volumeMounts:
+        - name: lib-modules
+          mountPath: /lib/modules
+    {{- end }}
       containers:
         - command:
             - ./worker
@@ -32,20 +49,26 @@ spec:
             - any
             - -port
             - '{{ .Values.tap.proxy.worker.srvPort }}'
+            - -metrics-port
+            - '{{ .Values.tap.metrics.port }}'
           {{- if .Values.tap.serviceMesh }}
             - -servicemesh
           {{- end }}
             - -procfs
             - /hostproc
+          {{- if .Values.tap.kernelModule.enabled }}
+            - -kernel-module
+          {{- end }}
           {{- if .Values.tap.debug }}
             - -debug
-          {{- end }}
-          {{- if .Values.tap.noKernelModule }}
-            - -no-kernel-module
           {{- end }}
           image: '{{ .Values.tap.docker.registry }}/worker:{{ not (eq .Values.tap.docker.tag "") | ternary .Values.tap.docker.tag (printf "v%s" .Chart.Version) }}'
           imagePullPolicy: {{ .Values.tap.docker.imagePullPolicy }}
           name: sniffer
+          ports:
+            - containerPort: {{ .Values.tap.metrics.port }}
+              protocol: TCP
+              name: metrics
           env:
           - name: POD_NAME
             valueFrom:
@@ -55,33 +78,25 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: TCP_STREAM_CHANNEL_TIMEOUT_MS
+            value: '{{ .Values.tap.tcpStreamChannelTimeoutMs }}'
           resources:
             limits:
-              cpu: {{ .Values.tap.resources.worker.limits.cpu }}
-              memory: {{ .Values.tap.resources.worker.limits.memory }}
+              cpu: {{ .Values.tap.resources.sniffer.limits.cpu }}
+              memory: {{ .Values.tap.resources.sniffer.limits.memory }}
             requests:
-              cpu: {{ .Values.tap.resources.worker.requests.cpu }}
-              memory: {{ .Values.tap.resources.worker.requests.memory }}
+              cpu: {{ .Values.tap.resources.sniffer.requests.cpu }}
+              memory: {{ .Values.tap.resources.sniffer.requests.memory }}
           securityContext:
             capabilities:
               add:
-                # NET_RAW is required to listen the network traffic
-                - NET_RAW
-                # NET_ADMIN is required to listen the network traffic
-                - NET_ADMIN
-                {{- if not .Values.tap.noKernelModule }}
-                # SYS_MODULE is required to install kernel modules
-                - SYS_MODULE
+                {{- range .Values.tap.capabilities.networkCapture }}
+                {{ print "- " . }}
                 {{- end }}
                 {{- if .Values.tap.serviceMesh }}
-                # SYS_ADMIN is required to read /proc/PID/net/ns + to install eBPF programs (kernel < 5.8)
-                - SYS_ADMIN
-                # SYS_PTRACE is required to set netns to other process + to open libssl.so of other process
-                - SYS_PTRACE
-                # DAC_OVERRIDE is required to read /proc/PID/environ
-                - DAC_OVERRIDE
-                # CHECKPOINT_RESTORE is required to readlink /proc/PID/exe (kernel > 5.9)
-                - CHECKPOINT_RESTORE
+                {{- range .Values.tap.capabilities.serviceMeshCapture }}
+                {{ print "- " . }}
+                {{- end }}
                 {{- end }}
               drop:
                 - ALL
@@ -108,6 +123,20 @@ spec:
               readOnly: true
             - mountPath: /app/data
               name: data
+      {{- if and (eq .Values.tap.kernelModule.enabled true) (eq .Values.tap.kernelModule.unloadOnDestroy true) }}
+        - name: unload-pf-ring
+          image: {{ .Values.tap.kernelModule.image }}
+          command: ["/bin/sh"]
+          args: ["-c", "trap 'rmmod pf_ring && sleep 3' SIGTERM; while true; do sleep 1; done"] 
+          securityContext:
+            capabilities:
+              add:
+                {{- range .Values.tap.capabilities.kernelModule }}
+                {{ print "- " . }}
+                {{- end }}
+              drop:
+                - ALL
+      {{- end }}
       {{- if .Values.tap.tls }}
         - command:
             - ./tracer
@@ -128,17 +157,19 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          resources:
+            limits:
+              cpu: {{ .Values.tap.resources.tracer.limits.cpu }}
+              memory: {{ .Values.tap.resources.tracer.limits.memory }}
+            requests:
+              cpu: {{ .Values.tap.resources.tracer.requests.cpu }}
+              memory: {{ .Values.tap.resources.tracer.requests.memory }}
           securityContext:
             capabilities:
               add:
-                # SYS_ADMIN is required to read /proc/PID/net/ns + to install eBPF programs (kernel < 5.8)
-                - SYS_ADMIN
-                # SYS_PTRACE is required to set netns to other process + to open libssl.so of other process
-                - SYS_PTRACE
-                # SYS_RESOURCE is required to change rlimits for eBPF
-                - SYS_RESOURCE
-                # CHECKPOINT_RESTORE is required to readlink /proc/PID/exe (kernel > 5.9)
-                - CHECKPOINT_RESTORE
+                {{- range .Values.tap.capabilities.ebpfCapture }}
+                {{ print "- " . }}
+                {{- end }}
               drop:
                 - ALL
           volumeMounts:
@@ -176,6 +207,9 @@ spec:
         - hostPath:
             path: /sys
           name: sys
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
         - name: data
 {{- if .Values.tap.persistentStorage }}
           persistentVolumeClaim:
