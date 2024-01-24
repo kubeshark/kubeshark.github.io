@@ -59,9 +59,21 @@ tap:
       - linux
   auth:
     enabled: false
+    type: saml
     approvedEmails: []
     approvedDomains: []
     approvedTenants: []
+    saml:
+      idpMetadataUrl: ""
+      x509crt: ""
+      x509key: ""
+      roles:
+        admin:
+          filter: ""
+          canReplayTraffic: true
+          canDownloadPCAP: true
+          canUseScripting: true
+          canUpdateTargetedPods: true
   ingress:
     enabled: false
     className: ""
