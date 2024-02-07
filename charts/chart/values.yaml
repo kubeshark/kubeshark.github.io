@@ -60,13 +60,11 @@ tap:
   auth:
     enabled: false
     type: saml
-    approvedEmails: []
-    approvedDomains: []
-    approvedTenants: []
     saml:
       idpMetadataUrl: ""
       x509crt: ""
       x509key: ""
+      roleAttribute: role
       roles:
         admin:
           filter: ""
@@ -74,6 +72,7 @@ tap:
           canDownloadPCAP: true
           canUseScripting: true
           canUpdateTargetedPods: true
+          showAdminConsoleLink: true
   ingress:
     enabled: false
     className: ""
@@ -106,11 +105,16 @@ tap:
     - SYS_PTRACE
     - SYS_RESOURCE
     - CHECKPOINT_RESTORE
+    - IPC_LOCK
   globalFilter: ""
   metrics:
     port: 49100
   trafficSampleRate: 100
   tcpStreamChannelTimeoutMs: 10000
+  misc:
+    jsonTTL: 5m
+    pcapTTL: 10s
+    pcapErrorTTL: 60s
 logs:
   file: ""
 kube:

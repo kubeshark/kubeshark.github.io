@@ -51,6 +51,7 @@ spec:
             - '{{ .Values.tap.proxy.worker.srvPort }}'
             - -metrics-port
             - '{{ .Values.tap.metrics.port }}'
+            - -unixsocket
           {{- if .Values.tap.serviceMesh }}
             - -servicemesh
           {{- end }}
@@ -61,6 +62,8 @@ spec:
           {{- end }}
           {{- if .Values.tap.debug }}
             - -debug
+            - -dumptracer
+            - "100000000"
           {{- end }}
           image: '{{ .Values.tap.docker.registry }}/worker:{{ not (eq .Values.tap.docker.tag "") | ternary .Values.tap.docker.tag (printf "v%s" .Chart.Version) }}'
           imagePullPolicy: {{ .Values.tap.docker.imagePullPolicy }}
@@ -80,6 +83,11 @@ spec:
                 fieldPath: metadata.namespace
           - name: TCP_STREAM_CHANNEL_TIMEOUT_MS
             value: '{{ .Values.tap.tcpStreamChannelTimeoutMs }}'
+          - name: KUBESHARK_CLOUD_API_URL
+            valueFrom:
+              configMapKeyRef:
+                name: kubeshark-config-map
+                key: KUBESHARK_CLOUD_API_URL
           resources:
             limits:
               cpu: {{ .Values.tap.resources.sniffer.limits.cpu }}
