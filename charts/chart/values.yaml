@@ -6,7 +6,7 @@ tap:
     imagePullSecrets: []
   proxy:
     worker:
-      srvPort: 30001
+      srvPort: 31001
     hub:
       srvPort: 8898
     front:
@@ -97,14 +97,12 @@ tap:
     - SYS_ADMIN
     - SYS_PTRACE
     - DAC_OVERRIDE
-    - CHECKPOINT_RESTORE
     kernelModule:
     - SYS_MODULE
     ebpfCapture:
     - SYS_ADMIN
     - SYS_PTRACE
     - SYS_RESOURCE
-    - CHECKPOINT_RESTORE
     - IPC_LOCK
   globalFilter: ""
   metrics:
