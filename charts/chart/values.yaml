@@ -4,6 +4,10 @@ tap:
     tag: ""
     imagePullPolicy: Always
     imagePullSecrets: []
+    overrideTag:
+      worker: ""
+      hub: ""
+      front: ""
   proxy:
     worker:
       srvPort: 30001
@@ -118,8 +122,10 @@ tap:
     trafficSampleRate: 100
     tcpStreamChannelTimeoutMs: 10000
     tcpStreamChannelTimeoutShow: false
+    disableCgroupIdResolution: false
 logs:
   file: ""
+  grep: ""
 kube:
   configPath: ""
   context: ""

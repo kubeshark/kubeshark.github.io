@@ -62,6 +62,9 @@ spec:
           {{- if .Values.tap.kernelModule.enabled }}
             - -kernel-module
           {{- end }}
+          {{- if .Values.tap.misc.disableCgroupIdResolution }}
+            - -disable-cgroup-id-resolution
+          {{- end }}
           {{- if .Values.tap.debug }}
             - -debug
             - -dumptracer
@@ -154,7 +157,11 @@ spec:
           {{- if .Values.tap.debug }}
             - -debug
           {{- end }}
+        {{- if .Values.tap.docker.overrideTag.worker }}
+          image: '{{ .Values.tap.docker.registry }}/worker:{{ .Values.tap.docker.overrideTag.worker }}'
+        {{ else }}
           image: '{{ .Values.tap.docker.registry }}/worker:{{ not (eq .Values.tap.docker.tag "") | ternary .Values.tap.docker.tag (printf "v%s" .Chart.Version) }}'
+        {{- end }}
           imagePullPolicy: {{ .Values.tap.docker.imagePullPolicy }}
           name: tracer
           env:
@@ -193,6 +200,9 @@ spec:
               readOnly: true
             - mountPath: /app/data
               name: data
+            - mountPath: /etc/os-release
+              name: os-release
+              readOnly: true
       {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
@@ -222,6 +232,9 @@ spec:
         - name: lib-modules
           hostPath:
             path: /lib/modules
+        - hostPath:
+            path: /etc/os-release
+          name: os-release
         - name: data
 {{- if .Values.tap.persistentStorage }}
           persistentVolumeClaim:
