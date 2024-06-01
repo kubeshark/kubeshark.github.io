@@ -23,6 +23,14 @@ git clone git@github.com:kubeshark/kubeshark.git --depth 1
 cd kubeshark/helm-chart
 ```
 
+In case you want to clone a specific tag of the repo (e.g. `v52.3.59`):
+
+```shell
+git clone git@github.com:kubeshark/kubeshark.git --depth 1 --branch <tag>
+cd kubeshark/helm-chart
+```
+> See the list of available tags here: https://github.com/kubeshark/kubeshark/tags
+
 Render the templates
 
 ```shell
@@ -157,7 +165,7 @@ Please refer to [metrics](./metrics.md) documentation for details.
 | `tap.ingress.annotations`                 | `Ingress` annotations                           | `{}`                                                    |
 | `tap.ipv6`                                | Enable IPv6 support for the front-end                        | `true`                                                  |
 | `tap.debug`                               | Enable debug mode                             | `false`                                                 |
-| `tap.kernelModule.enabled`                | Use PF_RING kernel module([details](PF_RING.md))      | `true`                                                 |
+| `tap.kernelModule.enabled`                | Use PF_RING kernel module([details](PF_RING.md))      | `false`                                                 |
 | `tap.kernelModule.image`                  | Container image containing PF_RING kernel module with supported kernel version([details](PF_RING.md))      | "kubeshark/pf-ring-module:all"                                                 |
 | `tap.kernelModule.unloadOnDestroy`        | Create additional container which watches for pod termination and unloads PF_RING kernel module. | `false`|
 | `tap.telemetry.enabled`                   | Enable anonymous usage statistics collection           | `true`                                                  |
