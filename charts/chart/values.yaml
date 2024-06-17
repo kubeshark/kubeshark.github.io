@@ -18,6 +18,7 @@ tap:
     host: 127.0.0.1
   regex: .*
   namespaces: []
+  bpfOverride: ""
   release:
     repo: https://helm.kubeshark.co
     name: kubeshark
@@ -122,7 +123,8 @@ tap:
     trafficSampleRate: 100
     tcpStreamChannelTimeoutMs: 10000
     tcpStreamChannelTimeoutShow: false
-    disableCgroupIdResolution: false
+    resolutionStrategy: auto
+    profile: false
 logs:
   file: ""
   grep: ""
