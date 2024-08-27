@@ -28,28 +28,28 @@ tap:
   persistentStorage: false
   persistentStorageStatic: false
   efsFileSytemIdAndPath: ""
-  storageLimit: 500Mi
+  storageLimit: 5000Mi
   storageClass: standard
   dryRun: false
   resources:
     hub:
       limits:
-        cpu: 750m
-        memory: 1Gi
+        cpu: 1000m
+        memory: 1500Mi
       requests:
         cpu: 50m
         memory: 50Mi
     sniffer:
       limits:
-        cpu: 750m
-        memory: 1Gi
+        cpu: 1000m
+        memory: 1500Mi
       requests:
         cpu: 50m
         memory: 50Mi
     tracer:
       limits:
-        cpu: 750m
-        memory: 1Gi
+        cpu: 1000m
+        memory: 1500Mi
       requests:
         cpu: 50m
         memory: 50Mi
@@ -95,7 +95,7 @@ tap:
     unloadOnDestroy: false
   telemetry:
     enabled: true
-  defaultFilter: ""
+  defaultFilter: "!dns and !tcp"
   scriptingDisabled: false
   targetedPodsUpdateDisabled: false
   recordingDisabled: false
@@ -125,6 +125,7 @@ tap:
   - redis
   - sctp
   - syscall
+  - tcp
   - ws
   metrics:
     port: 49100
@@ -138,6 +139,7 @@ tap:
     resolutionStrategy: auto
     profile: false
     duplicateTimeframe: 200ms
+    detectDuplicates: false
 logs:
   file: ""
   grep: ""
