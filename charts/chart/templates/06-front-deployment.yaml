@@ -60,12 +60,24 @@ spec:
                       {{- end }}'
             - name: REACT_APP_SUPPORT_CHAT_ENABLED
               value: '{{ and .Values.supportChatEnabled .Values.internetConnectivity | ternary "true" "false" }}'
+            - name: REACT_APP_DISSECTORS_UPDATING_ENABLED
+              value: '{{ .Values.dissectorsUpdatingEnabled | ternary "true" "false" }}'
+            - name: REACT_APP_SENTRY_ENABLED
+              value: '{{ (include "sentry.enabled" .) }}'
+            - name: REACT_APP_SENTRY_ENVIRONMENT
+              value: '{{ .Values.tap.sentry.environment }}'
         {{- if .Values.tap.docker.overrideTag.front }}
           image: '{{ .Values.tap.docker.registry }}/front:{{ .Values.tap.docker.overrideTag.front }}'
         {{ else }}
-          image: '{{ .Values.tap.docker.registry }}/front:{{ not (eq .Values.tap.docker.tag "") | ternary .Values.tap.docker.tag (printf "v%s" .Chart.Version) }}'
+          image: '{{ .Values.tap.docker.registry }}/front:{{ not (eq .Values.tap.docker.tag "") | ternary .Values.tap.docker.tag (include "kubeshark.defaultVersion" .) }}'
         {{- end }}
           imagePullPolicy: {{ .Values.tap.docker.imagePullPolicy }}
+        {{- if .Values.tap.docker.imagePullSecrets }}
+          imagePullSecrets:
+            {{- range .Values.tap.docker.imagePullSecrets }}
+            - name: {{ . }}
+            {{- end }}
+        {{- end }}
           name: kubeshark-front
           livenessProbe:
             periodSeconds: 1
