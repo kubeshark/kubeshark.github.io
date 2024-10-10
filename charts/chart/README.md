@@ -59,16 +59,9 @@ kubectl port-forward service/kubeshark-front 8899:80
 
 Visit [localhost:8899](http://localhost:8899)
 
+You can also use `kubeshark proxy` for a more stable port-forward connection.
 
-## Increase the Worker's Storage Limit
-
-For example, change from the default 500Mi to 5Gi:
-
-```shell
---set tap.storageLimit=5Gi
-```
-
-## Add a License
+## Add a License Key
 
 When it's necessary, you can use:
 
@@ -107,7 +100,7 @@ helm install kubeshark kubeshark/kubeshark \
   --set tap.ipv6=false
 ```
 
-## Metrics
+## Prometheus Metrics
 
 Please refer to [metrics](./metrics.md) documentation for details.
 
@@ -179,13 +172,17 @@ Please refer to [metrics](./metrics.md) documentation for details.
 | `tap.kernelModule.image`                  | Container image containing PF_RING kernel module with supported kernel version([details](PF_RING.md))      | "kubeshark/pf-ring-module:all"                                                 |
 | `tap.kernelModule.unloadOnDestroy`        | Create additional container which watches for pod termination and unloads PF_RING kernel module. | `false`|
 | `tap.telemetry.enabled`                   | Enable anonymous usage statistics collection           | `true`                                                  |
+| `tap.resourceGuard.enabled`               | Enable resource guard worker process, which watches RAM/disk usage and enables/disables traffic capture based on available resources | `false` |
 | `tap.sentry.enabled`                      | Enable sending of error logs to Sentry          | `false`                                                  |
 | `tap.sentry.environment`                      | Sentry environment to label error logs with      | `production`                                                  |
-| `tap.defaultFilter`                       | Sets the default dashboard KFL filter (e.g. `http`). By default, this value is set to filter out DNS  and TCP entries. The user can easily change this in the Dashboard.         | `"!dns and !tcp"`                                                  |
+| `tap.defaultFilter`                       | Sets the default dashboard KFL filter (e.g. `http`). By default, this value is set to filter out noisy protocols such as DNS, UDP, ICMP and TCP. The user can easily change this in the Dashboard. You can also change this value to change this behavior.        | `"!dns and !tcp and !udp and !icmp"`                                                  |
 | `tap.globalFilter`                        | Prepends to any KFL filter and can be used to limit what is visible in the dashboard. For example, `redact("request.headers.Authorization")` will redact the appropriate field. Another example `!dns` will not show any DNS traffic.      | `""`                                        |
 | `tap.metrics.port`                  | Pod port used to expose Prometheus metrics          | `49100`                                                  |
 | `tap.enabledDissectors`                   | This is an array of strings representing the list of supported protocols. Remove or comment out redundant protocols (e.g., dns).| The default list includes: amqp, dns , http, icmp, kafka, redis,sctp, syscall, tcp, ws.  |
 | `logs.file`                               | Logs dump path                      | `""`                                                    |
+| `pcapdump.enabled`                        | Enable recording of all traffic captured according to other parameters. Whatever Kubeshark captures, considering pod targeting rules, will be stored in pcap files ready to be viewed by tools                 | `true`                                                                                                  |
+| `pcapdump.maxTime`                        | The time window into the past that will be stored. Older traffic will be discarded.  | `2h`  |
+| `pcapdump.maxSize`                        | The maximum storage size the PCAP files will consume. Old files that cause to surpass storage consumption will get discarded.   | `500MB`  |
 | `kube.configPath`                         | Path to the `kubeconfig` file (`$HOME/.kube/config`)            | `""`                                                    |
 | `kube.context`                            | Kubernetes context to use for the deployment  | `""`                                                    |
 | `dumpLogs`                                | Enable dumping of logs         | `false`                                                 |
@@ -250,7 +247,7 @@ tap:
     enabled: true
     type: saml
     saml:
-      idpMetadataUrl: "https://tiptophelmet.us.auth0.com/samlp/metadata/MpWiDCMMB5ShU1HRnhdb1sHM6VWqdnDG"
+      idpMetadataUrl: "https://ti..th0.com/samlp/metadata/MpWiDCM..qdnDG"
       x509crt: |
         -----BEGIN CERTIFICATE-----
         MIIDlTCCAn0CFFRUzMh+dZvp+FvWd4gRaiBVN8EvMA0GCSqGSIb3DQEBCwUAMIGG
