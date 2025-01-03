@@ -16,7 +16,7 @@ tap:
       front: ""
   proxy:
     worker:
-      srvPort: 30001
+      srvPort: 48999
     hub:
       srvPort: 8898
     front:
@@ -85,6 +85,10 @@ tap:
           filter: ""
           canDownloadPCAP: true
           canUseScripting: true
+          scriptingPermissions:
+            canSave: true
+            canActivate: true
+            canDelete: true
           canUpdateTargetedPods: true
           canStopTrafficCapturing: true
           showAdminConsoleLink: true
@@ -134,6 +138,8 @@ tap:
   - syscall
   - ws
   - ldap
+  customMacros:
+    https: tls and (http or http2)
   metrics:
     port: 49100
   pprof:
@@ -160,6 +166,7 @@ pcapdump:
   maxTime: 1h
   maxSize: 500MB
   pcapSrcDir: pcapdump
+  time: time
 kube:
   configPath: ""
   context: ""
@@ -178,3 +185,4 @@ scripting:
   active: []
   console: true
 timezone: ""
+logLevel: warning
