@@ -148,6 +148,9 @@ Example for overriding image names:
 | `tap.storageLimit`                        | Limit of either the `emptyDir` or `persistentVolumeClaim` | `500Mi`                                     |
 | `tap.storageClass`                        | Storage class of the `PersistentVolumeClaim`          | `standard`                                      |
 | `tap.dryRun`                              | Preview of all pods matching the regex, without tapping them    | `false`                               |
+| `tap.dnsConfig.nameservers`               | Nameservers to use for DNS resolution          | `[]`                                                    |
+| `tap.dnsConfig.searches`                  | Search domains to use for DNS resolution       | `[]`                                                    |
+| `tap.dnsConfig.options`                   | DNS options to use for DNS resolution          | `[]`                                                    |
 | `tap.resources.hub.limits.cpu`            | CPU limit for hub                             | `""`  (no limit)                                                 |
 | `tap.resources.hub.limits.memory`         | Memory limit for hub                          | `5Gi`                                                |
 | `tap.resources.hub.requests.cpu`          | CPU request for hub                           | `50m`                                                   |
@@ -174,7 +177,9 @@ Example for overriding image names:
 | `tap.ignoreTainted`                       | Whether to ignore tainted nodes               | `false`                                                 |
 | `tap.labels`                              | Kubernetes labels to apply to all Kubeshark resources  | `{}`                                                    |
 | `tap.annotations`                         | Kubernetes annotations to apply to all Kubeshark resources | `{}`                                                |
-| `tap.nodeSelectorTerms`                   | Node selector terms                           | `[{"matchExpressions":[{"key":"kubernetes.io/os","operator":"In","values":["linux"]}]}]` |
+| `tap.nodeSelectorTerms.Workers`                   | Node selector terms for workers components                       | `[{"matchExpressions":[{"key":"kubernetes.io/os","operator":"In","values":["linux"]}]}]` |
+| `tap.nodeSelectorTerms.Hub`                   | Node selector terms for hub component                 | `[{"matchExpressions":[{"key":"kubernetes.io/os","operator":"In","values":["linux"]}]}]` |
+| `tap.nodeSelectorTerms.Front`                   | Node selector terms for front-end component                         | `[{"matchExpressions":[{"key":"kubernetes.io/os","operator":"In","values":["linux"]}]}]` |
 | `tap.auth.enabled`                        | Enable authentication                         | `false`                                                 |
 | `tap.auth.type`                           | Authentication type (1 option available: `saml`)      | `saml`                                              |
 | `tap.auth.approvedEmails`                 | List of approved email addresses for authentication              | `[]`                                                    |
@@ -196,6 +201,7 @@ Example for overriding image names:
 | `tap.sentry.enabled`                      | Enable sending of error logs to Sentry          | `false`                                                  |
 | `tap.sentry.environment`                      | Sentry environment to label error logs with      | `production`                                                  |
 | `tap.defaultFilter`                       | Sets the default dashboard KFL filter (e.g. `http`). By default, this value is set to filter out noisy protocols such as DNS, UDP, ICMP and TCP. The user can easily change this, **temporarily**, in the Dashboard. For a permanent change, you should change this value in the `values.yaml` or `config.yaml` file.        | `"!dns and !error"`                                    |
+| `tap.liveConfigMapChangesDisabled`        | If set to `true`, all user functionality (scripting, targeting settings, global & default KFL modification, traffic recording, traffic capturing on/off, protocol dissectors) involving dynamic ConfigMap changes from UI will be disabled     | `false`      |
 | `tap.globalFilter`                        | Prepends to any KFL filter and can be used to limit what is visible in the dashboard. For example, `redact("request.headers.Authorization")` will redact the appropriate field. Another example `!dns` will not show any DNS traffic.      | `""`                                        |
 | `tap.metrics.port`                  | Pod port used to expose Prometheus metrics          | `49100`                                                  |
 | `tap.enabledDissectors`                   | This is an array of strings representing the list of supported protocols. Remove or comment out redundant protocols (e.g., dns).| The default list excludes: `udp` and `tcp` |
@@ -214,7 +220,6 @@ Example for overriding image names:
 | `timezone`                                | IANA time zone applied to time shown in the front-end | `""` (local time zone applies) |
 | `supportChatEnabled`                      | Enable real-time support chat channel based on Intercom | `true` |
 | `internetConnectivity`                    | Turns off API requests that are dependant on Internet connectivity such as `telemetry` and `online-support`. | `true` |
-| `dissectorsUpdatingEnabled`                     | Turns off UI for enabling/disabling dissectors | `true` |
 
 KernelMapping pairs kernel versions with a
                             DriverContainer image. Kernel versions can be matched

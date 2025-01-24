@@ -37,6 +37,10 @@ tap:
   storageLimit: 5000Mi
   storageClass: standard
   dryRun: false
+  dns:
+    nameservers: []
+    searches: []
+    options: []
   resources:
     hub:
       limits:
@@ -78,11 +82,24 @@ tap:
   labels: {}
   annotations: {}
   nodeSelectorTerms:
-  - matchExpressions:
-    - key: kubernetes.io/os
-      operator: In
-      values:
-      - linux
+    hub:
+    - matchExpressions:
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux
+    workers:
+    - matchExpressions:
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux
+    front:
+    - matchExpressions:
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux
   auth:
     enabled: false
     type: saml
@@ -119,11 +136,7 @@ tap:
     enabled: false
     environment: production
   defaultFilter: "!dns and !error"
-  scriptingDisabled: false
-  targetedPodsUpdateDisabled: false
-  presetFiltersChangingEnabled: true
-  recordingDisabled: false
-  stopTrafficCapturingDisabled: false
+  liveConfigMapChangesDisabled: false
   capabilities:
     networkCapture:
     - NET_RAW
@@ -150,6 +163,7 @@ tap:
   - ws
   - ldap
   - radius
+  - diameter
   customMacros:
     https: tls and (http or http2)
   metrics:
@@ -177,7 +191,6 @@ pcapdump:
   timeInterval: 1m
   maxTime: 1h
   maxSize: 500MB
-  pcapSrcDir: pcapdump
   time: time
 kube:
   configPath: ""
@@ -188,7 +201,6 @@ license: ""
 cloudLicenseEnabled: true
 supportChatEnabled: true
 internetConnectivity: true
-dissectorsUpdatingEnabled: true
 scripting:
   env: {}
   source: ""
