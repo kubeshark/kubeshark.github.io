@@ -35,7 +35,8 @@ tap:
   persistentStorageStatic: false
   persistentStoragePvcVolumeMode: FileSystem
   efsFileSytemIdAndPath: ""
-  storageLimit: 5000Mi
+  secrets: []
+  storageLimit: 5Gi
   storageClass: standard
   dryRun: false
   dns:
@@ -150,7 +151,7 @@ tap:
   resourceGuard:
     enabled: false
   watchdog:
-    enabled: true
+    enabled: false
   gitops:
     enabled: false
   sentry:
@@ -166,7 +167,6 @@ tap:
   - icmp
   - kafka
   - redis
-  - sctp
   - ws
   - ldap
   - radius

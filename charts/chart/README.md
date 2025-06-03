@@ -146,7 +146,7 @@ Example for overriding image names:
 | `tap.persistentStorageStatic`             | Use static persistent volume provisioning (explicitly defined `PersistentVolume` ) | `false`            |
 | `tap.persistentStoragePvcVolumeMode` | Set the pvc volume mode (Filesystem\|Block) | `Filesystem` |
 | `tap.efsFileSytemIdAndPath`               | [EFS file system ID and, optionally, subpath and/or access point](https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/master/examples/kubernetes/access_points/README.md) `<FileSystemId>:<Path>:<AccessPointId>`  | ""                             |
-| `tap.storageLimit`                        | Limit of either the `emptyDir` or `persistentVolumeClaim` | `500Mi`                                     |
+| `tap.storageLimit`                        | Limit of either the `emptyDir` or `persistentVolumeClaim` | `5Gi`                                     |
 | `tap.storageClass`                        | Storage class of the `PersistentVolumeClaim`          | `standard`                                      |
 | `tap.dryRun`                              | Preview of all pods matching the regex, without tapping them    | `false`                               |
 | `tap.dnsConfig.nameservers`               | Nameservers to use for DNS resolution          | `[]`                                                    |
@@ -202,6 +202,7 @@ Example for overriding image names:
 | `tap.debug`                               | Enable debug mode                             | `false`                                                 |
 | `tap.telemetry.enabled`                   | Enable anonymous usage statistics collection           | `true`                                                  |
 | `tap.resourceGuard.enabled`               | Enable resource guard worker process, which watches RAM/disk usage and enables/disables traffic capture based on available resources | `false` |
+| `tap.secrets`                             | List of secrets to be used as source for environment variables (e.g. `kubeshark-license`) | `[]`                                                    |
 | `tap.sentry.enabled`                      | Enable sending of error logs to Sentry          | `true` (only for qualified users)                                                  |
 | `tap.sentry.environment`                      | Sentry environment to label error logs with      | `production`                                                  |
 | `tap.defaultFilter`                       | Sets the default dashboard KFL filter (e.g. `http`). By default, this value is set to filter out noisy protocols such as DNS, UDP, ICMP and TCP. The user can easily change this, **temporarily**, in the Dashboard. For a permanent change, you should change this value in the `values.yaml` or `config.yaml` file.        | `"!dns and !error"`                                    |
