@@ -139,6 +139,7 @@ tap:
     host: ks.svc.cluster.local
     tls: []
     annotations: {}
+  priorityClass: ""
   routing:
     front:
       basePath: ""
@@ -251,6 +252,7 @@ cloudLicenseEnabled: true
 aiAssistantEnabled: true
 demoModeEnabled: false
 supportChatEnabled: true
+betaEnabled: false
 internetConnectivity: true
 scripting:
   env: {}
