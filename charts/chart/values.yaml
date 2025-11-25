@@ -32,9 +32,12 @@ tap:
     raw:
       enabled: false
       storageSize: 1Gi
-    dbMaxSize: ""
+    dbMaxSize: 500Mi
+  snapshots:
+    storageClass: ""
+    storageSize: 1Gi
   release:
-    repo: https://helm.kubeshark.co
+    repo: https://helm.kubehq.com
     name: kubeshark
     namespace: default
   persistentStorage: false
@@ -239,6 +242,7 @@ tap:
       - SYS_RESOURCE
       - IPC_LOCK
   mountBpf: true
+  hostNetwork: true
 logs:
   file: ""
   grep: ""
