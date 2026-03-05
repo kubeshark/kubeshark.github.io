@@ -37,13 +37,17 @@ spec:
             - -loglevel
             - '{{ .Values.logLevel | default "warning" }}'
             - -capture-stop-after
-            - "{{ if hasKey .Values.tap.capture "stopAfter" }}{{ .Values.tap.capture.stopAfter }}{{ else }}5m{{ end }}"
+            - "{{ if hasKey .Values.tap.capture.dissection "stopAfter" }}{{ .Values.tap.capture.dissection.stopAfter }}{{ else }}5m{{ end }}"
             - -snapshot-size-limit
             - '{{ .Values.tap.snapshots.storageSize }}'
-            {{- if .Values.tap.delayedDissection.image }}
             - -dissector-image
-            - '{{ .Values.tap.delayedDissection.image }}'
-            {{- end }}
+          {{- if .Values.tap.docker.overrideImage.worker }}
+            - '{{ .Values.tap.docker.overrideImage.worker }}'
+          {{- else if .Values.tap.docker.overrideTag.worker }}
+            - '{{ .Values.tap.docker.registry }}/worker:{{ .Values.tap.docker.overrideTag.worker }}'
+          {{- else }}
+            - '{{ .Values.tap.docker.registry }}/worker:{{ not (eq .Values.tap.docker.tag "") | ternary .Values.tap.docker.tag (include "kubeshark.defaultVersion" .) }}'
+          {{- end }}
             {{- if .Values.tap.delayedDissection.cpu }}
             - -dissector-cpu
             - '{{ .Values.tap.delayedDissection.cpu }}'
@@ -55,9 +59,23 @@ spec:
             {{- if .Values.tap.gitops.enabled }}
             - -gitops
             {{- end }}
-          {{- if .Values.tap.secrets }}
+            - -cloud-api-url
+            - '{{ .Values.cloudApiUrl }}'
+            {{- if .Values.tap.snapshots.cloud.provider }}
+            - -cloud-storage-provider
+            - '{{ .Values.tap.snapshots.cloud.provider }}'
+            {{- end }}
+          {{- if or .Values.tap.secrets .Values.tap.snapshots.cloud.configMaps .Values.tap.snapshots.cloud.secrets }}
           envFrom:
             {{- range .Values.tap.secrets }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+            {{- range .Values.tap.snapshots.cloud.configMaps }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- range .Values.tap.snapshots.cloud.secrets }}
             - secretRef:
                 name: {{ . }}
             {{- end }}
@@ -75,8 +93,6 @@ spec:
             value: '{{ (include "sentry.enabled" .) }}'
           - name: SENTRY_ENVIRONMENT
             value: '{{ .Values.tap.sentry.environment }}'
-          - name: KUBESHARK_CLOUD_API_URL
-            value: 'https://api.kubeshark.com'
           - name: PROFILING_ENABLED
             value: '{{ .Values.tap.pprof.enabled }}'
         {{- if .Values.tap.docker.overrideImage.hub }}
@@ -184,10 +200,10 @@ spec:
               - key: AUTH_SAML_X509_KEY
                 path: kubeshark.key
       - name: snapshots-volume
-        {{- if .Values.tap.snapshots.storageClass }}
+        {{- if .Values.tap.snapshots.local.storageClass }}
         persistentVolumeClaim:
           claimName: {{ include "kubeshark.name" . }}-snapshots-pvc
         {{- else }}
         emptyDir:
-          sizeLimit: {{ .Values.tap.snapshots.storageSize }}
+          sizeLimit: {{ .Values.tap.snapshots.local.storageSize }}
         {{- end }}
