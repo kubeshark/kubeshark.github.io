@@ -2,6 +2,35 @@ apiVersion: v1
 entries:
   kubeshark:
   - apiVersion: v2
+    created: "2026-03-31T20:08:50.632305048Z"
+    description: The API Traffic Analyzer for Kubernetes
+    digest: 2b21d9648ac1c6da06088ecaf9f4cbe933d0ffe7e4a010891e6e16951df29d33
+    home: https://kubeshark.com
+    icon: https://raw.githubusercontent.com/kubeshark/assets/master/logo/vector/logo.svg
+    keywords:
+    - kubeshark
+    - packet capture
+    - traffic capture
+    - traffic analyzer
+    - network sniffer
+    - observability
+    - devops
+    - microservice
+    - forensics
+    - api
+    kubeVersion: '>= 1.16.0-0'
+    maintainers:
+    - email: support@kubeshark.com
+      name: Kubeshark
+      url: https://kubeshark.com
+    name: kubeshark
+    sources:
+    - https://github.com/kubeshark/kubeshark/tree/master/helm-chart
+    type: application
+    urls:
+    - https://github.com/kubeshark/kubeshark.github.io/releases/download/kubeshark-53.2.0/kubeshark-53.2.0.tgz
+    version: 53.2.0
+  - apiVersion: v2
     created: "2026-03-05T19:09:20.575065411Z"
     description: The API Traffic Analyzer for Kubernetes
     digest: bc54bd0f8c621cfeb6b7e52f190a168d338c49b972f23cce59413a455938e73b
@@ -2535,4 +2564,4 @@ entries:
     urls:
     - https://github.com/kubeshark/kubeshark.github.io/releases/download/kubeshark-39.6/kubeshark-39.6.tgz
     version: "39.6"
-generated: "2026-03-05T19:09:20.575474726Z"
+generated: "2026-03-31T20:08:50.632917174Z"
