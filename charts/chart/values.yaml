@@ -43,8 +43,24 @@ tap:
       storageSize: 20Gi
     cloud:
       provider: ""
+      prefix: ""
       configMaps: []
       secrets: []
+      s3:
+        bucket: ""
+        region: ""
+        accessKey: ""
+        secretKey: ""
+        roleArn: ""
+        externalId: ""
+      azblob:
+        storageAccount: ""
+        container: ""
+        storageKey: ""
+      gcs:
+        bucket: ""
+        project: ""
+        credentialsJson: ""
   release:
     repo: https://helm.kubeshark.com
     name: kubeshark
@@ -169,6 +185,7 @@ tap:
   dashboard:
     streamingType: connect-rpc
     completeStreamingEnabled: true
+    clusterWideMapEnabled: false
   telemetry:
     enabled: true
   resourceGuard:
@@ -181,7 +198,6 @@ tap:
     enabled: false
     environment: production
   defaultFilter: ""
-  liveConfigMapChangesDisabled: false
   globalFilter: ""
   enabledDissectors:
   - amqp
