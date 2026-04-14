@@ -37,6 +37,8 @@ tap:
   delayedDissection:
     cpu: "1"
     memory: 4Gi
+    storageSize: ""
+    storageClass: ""
   snapshots:
     local:
       storageClass: ""
@@ -205,6 +207,7 @@ tap:
   - http
   - icmp
   - kafka
+  - mongodb
   - redis
   - ws
   - ldap
@@ -224,6 +227,8 @@ tap:
     - 5672
     kafka:
     - 9092
+    mongodb:
+    - 27017
     redis:
     - 6379
     ldap:
