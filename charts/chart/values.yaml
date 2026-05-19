@@ -153,24 +153,26 @@ tap:
   auth:
     enabled: false
     type: saml
+    roles:
+      admin:
+        filter: ""
+        canDownloadPCAP: true
+        canUseScripting: true
+        scriptingPermissions:
+          canSave: true
+          canActivate: true
+          canDelete: true
+        canUpdateTargetedPods: true
+        canStopTrafficCapturing: true
+        canControlDissection: true
+        showAdminConsoleLink: true
+    rolesClaim: role
+    defaultRole: ""
+    defaultFilter: ""
     saml:
       idpMetadataUrl: ""
       x509crt: ""
       x509key: ""
-      roleAttribute: role
-      roles:
-        admin:
-          filter: ""
-          canDownloadPCAP: true
-          canUseScripting: true
-          scriptingPermissions:
-            canSave: true
-            canActivate: true
-            canDelete: true
-          canUpdateTargetedPods: true
-          canStopTrafficCapturing: true
-          canControlDissection: true
-          showAdminConsoleLink: true
   ingress:
     enabled: false
     className: ""
@@ -213,6 +215,7 @@ tap:
   - postgresql
   - redis
   - ws
+  - tlsx
   - ldap
   - radius
   - diameter
