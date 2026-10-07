@@ -55,6 +55,8 @@ tap:
         secretKey: ""
         roleArn: ""
         externalId: ""
+        endpoint: ""
+        forcePathStyle: false
       azblob:
         storageAccount: ""
         container: ""
@@ -154,7 +156,7 @@ tap:
     enabled: false
     type: saml
     rolesClaim: groups
-    defaultRole: kubeshark-viewer
+    defaultRole: kubeshark-admin
     groupMapping: {}
     roles: {}
     cli:
@@ -240,6 +242,17 @@ tap:
     https: tls and (http or http2)
   metrics:
     port: 49100
+    serviceMonitor:
+      enabled: false
+      labels: {}
+      annotations: {}
+      interval: ""
+      scrapeTimeout: ""
+      path: ""
+      scheme: ""
+      honorLabels: false
+      relabelings: []
+      metricRelabelings: []
   pprof:
     enabled: false
     port: 8000
@@ -280,8 +293,11 @@ tap:
       - SYS_PTRACE
       - SYS_RESOURCE
       - IPC_LOCK
+  networkPolicies:
+    enabled: false
   mountBpf: true
   hostNetwork: true
+  extraObjects: []
 logs:
   file: ""
   grep: ""
@@ -301,7 +317,6 @@ headless: false
 license: ""
 cloudApiUrl: https://api.kubeshark.com
 cloudLicenseEnabled: true
-demoModeEnabled: false
 supportChatEnabled: false
 betaEnabled: false
 internetConnectivity: true
